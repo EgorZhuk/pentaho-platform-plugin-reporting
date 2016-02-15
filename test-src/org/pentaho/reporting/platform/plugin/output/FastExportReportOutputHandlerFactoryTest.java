@@ -18,6 +18,11 @@
 package org.pentaho.reporting.platform.plugin.output;
 
 import junit.framework.TestCase;
+import org.pentaho.reporting.engine.classic.core.AttributeNames;
+import org.pentaho.reporting.engine.classic.core.ClassicEngineBoot;
+import org.pentaho.reporting.engine.classic.core.MasterReport;
+import org.pentaho.reporting.libraries.base.config.ExtendedConfiguration;
+import org.pentaho.reporting.libraries.base.config.ModifiableConfiguration;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
@@ -67,5 +72,30 @@ public class FastExportReportOutputHandlerFactoryTest extends TestCase {
 
     handlerFactory.setXlsxAvailable( false );
     assertNull( handlerFactory.createXlsOutput( selector ) );
+  }
+
+  public void testGetIsCachePageableHtmlContentEnabled() throws Exception {
+    MasterReport report = mock( MasterReport.class );
+    final ModifiableConfiguration config = ClassicEngineBoot.getInstance().getEditableConfig();
+
+    config.setConfigProperty( "org.pentaho.reporting.platform.plugin.output.CachePageableHtmlContent", "true" );
+    assertTrue( handlerFactory.getIsCachePageableHtmlContentEnabled( report ) );
+
+    config.setConfigProperty( "org.pentaho.reporting.platform.plugin.output.CachePageableHtmlContent", "false" );
+    assertFalse( handlerFactory.getIsCachePageableHtmlContentEnabled( report ) );
+
+    config.setConfigProperty( "org.pentaho.reporting.platform.plugin.output.CachePageableHtmlContent", "" );
+    assertFalse( handlerFactory.getIsCachePageableHtmlContentEnabled( report ) );
+
+    doReturn( true ).when( report ).getAttribute( AttributeNames.Pentaho.NAMESPACE,
+      AttributeNames.Pentaho.DYNAMIC_REPORT_CACHE );
+    assertTrue( handlerFactory.getIsCachePageableHtmlContentEnabled( report ) );
+
+    doReturn( false ).when( report ).getAttribute( AttributeNames.Pentaho.NAMESPACE,
+      AttributeNames.Pentaho.DYNAMIC_REPORT_CACHE );
+    assertFalse( handlerFactory.getIsCachePageableHtmlContentEnabled( report ) );
+
+    config.setConfigProperty( "org.pentaho.reporting.platform.plugin.output.CachePageableHtmlContent", "true" );
+    assertFalse( handlerFactory.getIsCachePageableHtmlContentEnabled( report ) );
   }
 }
