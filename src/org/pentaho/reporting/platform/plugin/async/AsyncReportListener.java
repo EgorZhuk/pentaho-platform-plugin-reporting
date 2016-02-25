@@ -8,4 +8,6 @@ import java.util.EventListener;
 public interface AsyncReportListener extends EventListener {
   void setStatus( AsyncExecutionStatus status );
   void setProgress( int progress );
+  void setPage( int page );
+  void setActivity( String activity );
 }

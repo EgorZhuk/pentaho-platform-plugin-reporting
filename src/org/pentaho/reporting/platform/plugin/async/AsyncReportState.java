@@ -34,6 +34,18 @@ public interface AsyncReportState extends Serializable {
 
   /**
    *
+   * @return Page is currently being processed
+   */
+  int getPage();
+
+  /**
+   *
+   * @return Activity code is currently being processed
+   */
+  String getActivity();
+
+  /**
+   *
    * @return mime type advice of report content that will be generated at the end.
    */
   String getMimeType();
